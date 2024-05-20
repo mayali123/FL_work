@@ -9,7 +9,7 @@ from ..utils.sampling import iid_sampling, non_iid_dirichlet_sampling
 
 def get_dataset(args):
     if args.dataset == "isic2019":
-        root = "your path"
+        root = "../data/ISIC_2019"
         args.n_classes = args.num_classes = 8
 
         normalize = transforms.Normalize([0.485, 0.456, 0.406],
