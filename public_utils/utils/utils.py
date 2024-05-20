@@ -240,3 +240,38 @@ def add_noise(args, y_train, dict_users):
         real_noise_level[i] = actual_noise_rate
 
     return (y_train_noisy, gamma_s, real_noise_level)
+
+
+
+def get_num_of_each_class(dataset, client_idxs, n_classes):
+    class_sum = np.array([0] * n_classes)
+    for idx in client_idxs:
+        label = dataset.targets[idx]
+        class_sum[label] += 1
+    return class_sum.tolist()
+
+
+class avg_acc():
+    def __init__(self) -> None:
+        # self.clean_acc_num = None 
+        # self.noisy_acc_num = None
+        # self.all_num = None
+        self.Flag = False
+        
+
+    def append(self,acc_info_dict) -> None:
+        if not self.Flag:
+            self.clean_acc_num  = copy.deepcopy(acc_info_dict['class_pre_clean_acc'])
+            self.noisy_acc_num  = copy.deepcopy(acc_info_dict['class_pre_noisy_acc'])
+            self.all_num  = copy.deepcopy(acc_info_dict['class_smaple_num'])
+            self.Flag = True
+        else:
+            self.clean_acc_num  += acc_info_dict['class_pre_clean_acc']
+            self.noisy_acc_num  += acc_info_dict['class_pre_noisy_acc']
+            self.all_num  += acc_info_dict['class_smaple_num']
+    
+    def print_all_acc(self,add_info='') :
+        logging.info(f"{add_info}_clean_acc_num:{np.sum(self.clean_acc_num)},{add_info}_noisy_acc_num:{np.sum(self.noisy_acc_num)},all_smaple_num:{np.sum(self.all_num)}，detect_acc = :{(np.sum(self.clean_acc_num) + np.sum(self.noisy_acc_num))/np.sum(self.all_num) }")
+        logging.info(f"clean_acc_num:{self.clean_acc_num},_noisy_acc_num:{self.noisy_acc_num},all_smaple_num:{self.all_num}，detect_acc = :{(self.clean_acc_num + self.noisy_acc_num)/self.all_num }")
+        
+        
